@@ -122,6 +122,7 @@ class BaseSerializer(Field):
         child_serializer = cls(*args, **kwargs)
         list_kwargs = {
             'child': child_serializer,
+            'flat': kwargs.pop('flat', False),
         }
         if allow_empty is not None:
             list_kwargs['allow_empty'] = allow_empty
@@ -528,6 +529,7 @@ class ListSerializer(BaseSerializer):
     def __init__(self, *args, **kwargs):
         self.child = kwargs.pop('child', copy.deepcopy(self.child))
         self.allow_empty = kwargs.pop('allow_empty', True)
+        self.flat = kwargs.pop('flat', False)
         assert self.child is not None, '`child` is a required argument.'
         assert not inspect.isclass(self.child), '`child` has not been instantiated.'
         super(ListSerializer, self).__init__(*args, **kwargs)
@@ -1423,6 +1425,10 @@ class ModelSerializer(Serializer):
 
         return validators
 
+    @classmethod
+    def flatten(cls):
+        cls.flat = True
+        cls.Meta.fields = [f.name for f in cls.Meta.model._meta.fields if not f.is_relation]
 
 if hasattr(models, 'UUIDField'):
     ModelSerializer.serializer_field_mapping[models.UUIDField] = UUIDField
