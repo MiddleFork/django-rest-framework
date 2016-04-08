@@ -1434,6 +1434,7 @@ class ModelSerializer(Serializer):
 
         """
         #TODO: Maintain foreign key IDs in the fields
+        #TODO: Respect Meta declarations of 'fields' and/or 'exclude'
         cls.flat = True
         cls.Meta.fields = [f.name for f in cls.Meta.model._meta.fields if not f.is_relation]
         cls._declared_fields = {}
