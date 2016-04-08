@@ -1428,6 +1428,12 @@ class ModelSerializer(Serializer):
 
     @classmethod
     def flatten(cls):
+        """Flatten a ModelSerializer so that only the native table is queried.
+
+        Ideal for 'list' operations to avoid the N+1 problem, prefetch_related or select_related, and pagination.
+
+        """
+        #TODO: Maintain foreign key IDs in the fields
         cls.flat = True
         cls.Meta.fields = [f.name for f in cls.Meta.model._meta.fields if not f.is_relation]
         cls._declared_fields = {}
