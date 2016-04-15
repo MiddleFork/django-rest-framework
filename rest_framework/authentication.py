@@ -19,6 +19,9 @@ def get_authorization_header(request):
 
     Hide some test client ickyness where the header can be unicode.
     """
+
+    print 'Here we are getting the authorization header'
+
     auth = request.META.get('HTTP_AUTHORIZATION', b'')
     if isinstance(auth, text_type):
         # Work around django test client oddness
